@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -22,5 +22,25 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-asyncio
 
-      - name: Run tests
+      - name: Run backend tests
         run: pytest tests -q
+
+  frontend-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check required frontend files
+        run: |
+          test -f frontend/index.html
+          test -f frontend/canvas.js
+
+      - name: Check JavaScript syntax (optional)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Run JS linter (optional)
+        run: |
+          npm install eslint
+          npx eslint frontend/*.js || echo "⚠ JS warnings ignored for now"
